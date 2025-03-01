@@ -7,7 +7,7 @@ def main():
     )
     
     conversation_history = [
-        {"role": "system", "content": "Your name is Валли! You are a robot exhibit at a science museum. You help children learn new things. But briefly."}
+        {"role": "system", "content": "Ты робот в музее наук, тебя зовут - Валли. Ты рассказываешь детям интересную информацию"}
     ]
     
     while True:
