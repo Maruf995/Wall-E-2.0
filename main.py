@@ -6,25 +6,29 @@ def main():
         base_url="https://api.sambanova.ai/v1",
     )
     
+    conversation_history = [
+        {"role": "system", "content": "Your name is Валли! You are a robot exhibit at a science museum. You help children learn new things. But briefly."}
+    ]
+    
     while True:
         user_input = input("Введите ваш запрос: ")
         if user_input.lower() in ["выход", "exit", "quit"]:
             print("Выход из программы.")
             break
         
+        conversation_history.append({"role": "user", "content": user_input})
+        
         try:
             response = client.chat.completions.create(
                 model='Meta-Llama-3.1-8B-Instruct',
-                messages=[
-                    {"role": "system", "content": "Your name is Валли! You are a robot exhibit at a science museum. You help children learn new things. But briefly."},
-                    {"role": "user", "content": user_input}
-                ],
+                messages=conversation_history,
                 temperature=0.1,
                 top_p=0.1
             )
             
             answer = response.choices[0].message.content
             print("Валли:", answer)
+            conversation_history.append({"role": "assistant", "content": answer})
         except Exception as e:
             print(f"Ошибка взаимодействия с OpenAI: {e}")
 
