@@ -1,26 +1,40 @@
 import serial
 import time
 
-# === Подключение к Arduino ===
-arduino = serial.Serial('/dev/cu.usbserial-10', 9600)  # Укажи свой порт
-time.sleep(2)
+# === Serial Port ===
+arduino = serial.Serial('/dev/cu.usbserial-10', 9600)  # Замените на свой порт
+time.sleep(2)  # Подождать, пока Arduino перезагрузится
 
-# === Функция для отправки угла ===
-def set_servo_angle(pin, angle):
-    command = f"{pin}:{angle}\n"
+# === Углы ===
+RIGHT_ARM_UP = 80
+RIGHT_ARM_DOWN =20
+
+LEFT_ARM_UP = 70
+LEFT_ARM_DOWN =130
+
+
+# === Пины ===
+LEFT_ARM = 5
+RIGHT_ARM = 6
+
+def send_command(servo, angle):
+    command = f"{servo}:{angle}\n"
     arduino.write(command.encode())
-    print(f"Отправлено: {command.strip()}")
-    time.sleep(1)  # Задержка, чтобы серво успело переместиться
+    print(f"Sent -> Servo {servo}: {angle}")
 
-# === Последовательность углов ===
-angles = [0,45,0]
-angles2 = [0, -17, 0]
+try:
+    send_command(LEFT_ARM, LEFT_ARM_UP)
+    time.sleep(1)
 
-# === Перемещаем серво на пине 5 по указанным углам ===
-for angle2 in angles2:
-    # set_servo_angle(5, angle)  # Устанавливаем угол для пина 5
-    set_servo_angle(4, angle2)  # Устанавливаем угол для пина 5
-    time.sleep(1)  # Задержка между движениями
+    send_command(LEFT_ARM, LEFT_ARM_DOWN)
+    time.sleep(1)
 
-# === Закрытие соединения с Arduino ===
-arduino.close()
+    send_command(RIGHT_ARM, RIGHT_ARM_UP)
+    time.sleep(1)
+
+    send_command(RIGHT_ARM, RIGHT_ARM_DOWN)
+    time.sleep(1)
+
+except KeyboardInterrupt:
+    print("Остановлено пользователем.")
+    arduino.close()
